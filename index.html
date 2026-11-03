@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+    }
+    .michroma-regular {
+      font-family: "Michroma", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+  </style>
+</head>
+<style>
+@font-face {
+  font-family: "DeadCRT";
+  src: url("/deadcrt-font/DeadcrtRegular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+</style>
+<body>
+  <canvas id="three-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1;"></canvas>
+  <canvas id="console-canvas" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 2; pointer-events: none; text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;"></canvas>
+  <div id="scroll-spacer"
+    style="height: 2000vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></div>
+
+  <script type="module" src="src/main.js" defer></script>
+</body>
+
+</html>

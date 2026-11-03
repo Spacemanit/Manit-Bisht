@@ -1,0 +1,6 @@
+.tools/
+.agents/
+.codex/
+HitmarkerFonts/
+.DS_Store
+._*

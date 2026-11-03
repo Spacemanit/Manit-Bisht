@@ -1,0 +1,338 @@
+{
+  "assets/black-hole/lensing-crop.json": {
+    "mtime": 1791570841.9552522,
+    "seen": 1791678574.9618847,
+    "ast_hash": "583858c2e969cc50dedfd309f0be3be6",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/native-volume-manifest.json": {
+    "mtime": 1791570518.3726788,
+    "seen": 1791678574.961894,
+    "ast_hash": "1ad09363eb77f00c0e4729dede90e1f4",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-metadata.json": {
+    "mtime": 1791569277.6943355,
+    "seen": 1791678574.9618983,
+    "ast_hash": "492f324112be9a8daea90f8762837838",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/build_report.py": {
+    "mtime": 1791567096.2746234,
+    "seen": 1791678574.9619005,
+    "ast_hash": "7b66eb19b3b641313faafaefa2939c11",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/check_report.py": {
+    "mtime": 1791567196.9987793,
+    "seen": 1791678574.9619029,
+    "ast_hash": "7d489abc0d5a9a97ce804caa7a5139b1",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/content_audit.json": {
+    "mtime": 1791567099.2573283,
+    "seen": 1791678574.9619052,
+    "ast_hash": "0542d03025d272cae4365a1d84ba0693",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/references.json": {
+    "mtime": 1791566521.181453,
+    "seen": 1791678574.9619074,
+    "ast_hash": "72862013e2f93621f5fa778b5fd2fb62",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/report_content.json": {
+    "mtime": 1791566978.4821837,
+    "seen": 1791678574.9619095,
+    "ast_hash": "f6d5d26eb80a20dc108bfca7d272f853",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/requirements_check.json": {
+    "mtime": 1791567199.7284658,
+    "seen": 1791678574.9619112,
+    "ast_hash": "2d44e435917727df05d52bff26fe20b3",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/word_render.ps1": {
+    "mtime": 1791566811.9580112,
+    "seen": 1791678574.9619129,
+    "ast_hash": "305952170ce0f1b5cc9c250f96b13de6",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/camera-timeline.dsl.js": {
+    "mtime": 1791678437.4838686,
+    "seen": 1791678574.9619145,
+    "ast_hash": "bec0e02f52a6975f60f2517a0f3f0932",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/original-objects.json": {
+    "mtime": 1791678441.2687323,
+    "seen": 1791678574.961917,
+    "ast_hash": "c45f6a0f174b887d774861a2b58435ea",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/scene-plan.json": {
+    "mtime": 1791678437.4848552,
+    "seen": 1791678574.9619188,
+    "ast_hash": "9c7877f3cc98b22c62fad6e368cf1692",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/verify-overlay.cjs": {
+    "mtime": 1791678437.485366,
+    "seen": 1791678574.9619205,
+    "ast_hash": "814250c10515e1ebf62e2a93265a4d05",
+    "semantic_hash": ""
+  },
+  "skills-lock.json": {
+    "mtime": 1791554675.2218418,
+    "seen": 1791678574.9619224,
+    "ast_hash": "7db5eda32ebebc064713f10994350fbf",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1791555094.3062167,
+    "seen": 1791678574.9619243,
+    "ast_hash": "22602c2350c4b3fc1b66eeeae654eb41",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/README.md": {
+    "mtime": 1791572763.628958,
+    "seen": 1791678574.9619262,
+    "ast_hash": "7052c4e5a670b17c624560c595404b83",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/blender-spline-scene.html": {
+    "mtime": 1791569562.1205435,
+    "seen": 1791678574.9619277,
+    "ast_hash": "02a9ebb543b4743c68c0ff33fe36bbcb",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-preview.html": {
+    "mtime": 1791572962.876624,
+    "seen": 1791678574.9619298,
+    "ast_hash": "ebd7b0a5e38e7050086c7cff95fa45f6",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-preview.template.html": {
+    "mtime": 1791572960.4512236,
+    "seen": 1791678574.9619315,
+    "ast_hash": "a1f7935fd6b764ff79b4e3cda5704170",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/extracted.txt": {
+    "mtime": 1791566898.9614108,
+    "seen": 1791678574.961933,
+    "ast_hash": "43ace6cf2b53871b20ecbd735cafae56",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/resolved_report.txt": {
+    "mtime": 1791567099.2541728,
+    "seen": 1791678574.9619346,
+    "ast_hash": "28712d509168626bd71a21ca2c33aa76",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/README.md": {
+    "mtime": 1791678502.9924753,
+    "seen": 1791678574.9619372,
+    "ast_hash": "539b1f781e0c5eb50e6212d958d84999",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/overlay.html": {
+    "mtime": 1791678437.482858,
+    "seen": 1791678574.9619389,
+    "ast_hash": "7c9e907d0e3fe66e56e03f1c1f3b6011",
+    "semantic_hash": ""
+  },
+  "deliverables/spline-scroll/preview.html": {
+    "mtime": 1791678447.7330334,
+    "seen": 1791678574.9619405,
+    "ast_hash": "b1cd84e8eda55a5f6c83e63919212a8b",
+    "semantic_hash": ""
+  },
+  "main.html": {
+    "mtime": 1791664202.9827669,
+    "seen": 1791678574.9619427,
+    "ast_hash": "8e2ca607d389f311ef5f5bb6db50537c",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/report.pdf": {
+    "mtime": 1791567107.421095,
+    "seen": 1791678574.9619448,
+    "ast_hash": "1c9268a1b3c6b55aa4cbc0ede996ef13",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/black-hole-preview.png": {
+    "mtime": 1791573637.6546326,
+    "seen": 1791678574.9619467,
+    "ast_hash": "c6e604c2b46bcd23c2ad23460fbbf105",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/blender-lensing-bake.png": {
+    "mtime": 1791571507.6685622,
+    "seen": 1791678574.9619484,
+    "ast_hash": "5c82342ed5c6639db2fa703b02bf1d46",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/blender-original-preview.png": {
+    "mtime": 1791571443.8161917,
+    "seen": 1791678574.9619503,
+    "ast_hash": "6e48207dea47dda0582777155c871bf6",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/spline-lensing-bake.png": {
+    "mtime": 1791571507.6954882,
+    "seen": 1791678574.961952,
+    "ast_hash": "b04995dde96acf81752f72ced97f625a",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-00.png": {
+    "mtime": 1791570517.8426466,
+    "seen": 1791678574.9619539,
+    "ast_hash": "3093cf30b60f245bd0f4bc9ff802ef94",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-01.png": {
+    "mtime": 1791570517.8787804,
+    "seen": 1791678574.9619558,
+    "ast_hash": "d090efe2d22e61d7e88f0332addddbdd",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-02.png": {
+    "mtime": 1791570517.9094257,
+    "seen": 1791678574.9619575,
+    "ast_hash": "6b271399ba3ecbec7adb516b6ee29919",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-03.png": {
+    "mtime": 1791570517.9430964,
+    "seen": 1791678574.9619596,
+    "ast_hash": "dd94d35ae4927558bebdac220cd8d1d9",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-04.png": {
+    "mtime": 1791570517.9771101,
+    "seen": 1791678574.9619617,
+    "ast_hash": "435dc59fda69abb49c9318ce492afca8",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-05.png": {
+    "mtime": 1791570518.0186267,
+    "seen": 1791678574.9619634,
+    "ast_hash": "c3382bd2c7ffed80f14526b5ae1c7647",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-06.png": {
+    "mtime": 1791570518.057056,
+    "seen": 1791678574.9619653,
+    "ast_hash": "808dee639757ec80f0d2433fc3c39954",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-07.png": {
+    "mtime": 1791570518.093589,
+    "seen": 1791678574.961967,
+    "ast_hash": "1a44535c7f4bac553e996b66170d5889",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-08.png": {
+    "mtime": 1791570518.13406,
+    "seen": 1791678574.961969,
+    "ast_hash": "de7d3246b7a9bf857cfdb9bc89e5e3b6",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-09.png": {
+    "mtime": 1791570518.1710405,
+    "seen": 1791678574.9619708,
+    "ast_hash": "0b0f30e4cef6b73c670d03f227dab9d7",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-10.png": {
+    "mtime": 1791570518.203728,
+    "seen": 1791678574.9619722,
+    "ast_hash": "2c10d00f82d76dd7a649df2a4570149a",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-11.png": {
+    "mtime": 1791570518.235716,
+    "seen": 1791678574.961974,
+    "ast_hash": "fd69bebb3811a39175dd683b74557fc6",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-12.png": {
+    "mtime": 1791570518.2704492,
+    "seen": 1791678574.9619765,
+    "ast_hash": "1f10c7f0b113a1d9e8626c7ca8c88624",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-13.png": {
+    "mtime": 1791570518.2987354,
+    "seen": 1791678574.9619787,
+    "ast_hash": "4aad3ce04ddaf088cdd4ead866ef423f",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-14.png": {
+    "mtime": 1791570518.32583,
+    "seen": 1791678574.9619803,
+    "ast_hash": "8a283a749beb3200013e9c9ee8ad3cf7",
+    "semantic_hash": ""
+  },
+  "assets/black-hole/volume-slice-15.png": {
+    "mtime": 1791570518.3518877,
+    "seen": 1791678574.9619825,
+    "ast_hash": "3093cf30b60f245bd0f4bc9ff802ef94",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/architecture.png": {
+    "mtime": 1791567099.0903244,
+    "seen": 1791678574.9619842,
+    "ast_hash": "c035e4c38d45d458f88a0f1ff148edc6",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-1.png": {
+    "mtime": 1791567120.5271013,
+    "seen": 1791678574.961986,
+    "ast_hash": "e12b6b69d75f7b488ef0d740f7a5bb5c",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-2.png": {
+    "mtime": 1791567121.436896,
+    "seen": 1791678574.9619875,
+    "ast_hash": "8b66cbb4691e2c85162da3cc7538853f",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-3.png": {
+    "mtime": 1791567122.1044004,
+    "seen": 1791678574.9619894,
+    "ast_hash": "43aa50059da68c447449925fb6db656e",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-4.png": {
+    "mtime": 1791567122.902897,
+    "seen": 1791678574.961991,
+    "ast_hash": "771d663b1303b7220adf5d280a7d836f",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-5.png": {
+    "mtime": 1791567123.5094135,
+    "seen": 1791678574.9619927,
+    "ast_hash": "f3f6af51f6f4282110a4038faf506594",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-6.png": {
+    "mtime": 1791567124.2352824,
+    "seen": 1791678574.9619944,
+    "ast_hash": "f845ee9fdcf899fe866c0f518cf13add",
+    "semantic_hash": ""
+  },
+  "deliverables/hft_case_study/work/render/page-7.png": {
+    "mtime": 1791567013.3602958,
+    "seen": 1791678574.9619966,
+    "ast_hash": "3439a3e7ea0674fce50d8f4ad8ffa459",
+    "semantic_hash": ""
+  },
+  "images.jpg": {
+    "mtime": 1791674808.0490358,
+    "seen": 1791678574.9619987,
+    "ast_hash": "164eab5ed6cbba4b12f50023cc59e4c9",
+    "semantic_hash": ""
+  }
+}
