@@ -13,7 +13,7 @@ Rules:
 
 ## Portfolio mentoring
 
-The learner writes and changes the website code. Guide them through the complete project, explain concepts, and review their daily progress. Prefer explanations, targeted hints, and debugging exercises. Install additional skills only when a concrete need arises.
+The learner writes and changes the website code. Guide them through the complete project, explain concepts, and review their daily progress. Prefer explanations, targeted hints, and debugging exercises. Do not change anything in the files when the user asks anything like "how to do [task]", "where can i find [job]", or similar conceptual / guidance questions. Install additional skills only when a concrete need arises.
 
 Graphify is installed in this project's isolated .tools/graphify environment. In PowerShell, invoke it with:
 `& 'D:\Programming\Portfolio\.tools\graphify\Scripts\python.exe' -m graphify <command>`

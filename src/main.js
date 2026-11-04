@@ -135,8 +135,13 @@ const { mesh: blackhole, sky: blackholeSky } = createBlackHole();
 scene.add(blackhole);
 scene.background = blackholeSky;
 
-// Wormhole Funnel Entrance in space
-const wormholeEntrance = createWormholeEntrance(blackholeSky);
+// Final White Hole & Dense Cosmic Starfield
+const { mesh: whiteHole, sky: whiteHoleSky } = createWhiteHole();
+scene.add(whiteHole);
+whiteHole.visible = false;
+
+// Interstellar 3D Spherical Wormhole Entrance (connecting our sky to destination galaxy sky)
+const wormholeEntrance = createWormholeEntrance(blackholeSky, whiteHoleSky);
 scene.add(wormholeEntrance.group);
 wormholeEntrance.group.visible = false;
 
@@ -146,14 +151,9 @@ const wormholeTunnel = createWormholeTunnel(wormholeCurve, blackholeSky);
 scene.add(wormholeTunnel.group);
 wormholeTunnel.group.visible = false;
 
-// Final White Hole & Dense Cosmic Starfield
-const { mesh: whiteHole, sky: whiteHoleSky } = createWhiteHole();
-scene.add(whiteHole);
-whiteHole.visible = false;
-
 // Camera distances for Black Hole, Zoomout, and White Hole
 const START_CAMERA_Z = 16.67;
-const ZOOM_IN_CAMERA_Z = 1.0;
+const ZOOM_IN_CAMERA_Z = 0.7;
 const PHASE2_FAR_Z = 36.0;
 
 // ---------------------------------------------------------------------------

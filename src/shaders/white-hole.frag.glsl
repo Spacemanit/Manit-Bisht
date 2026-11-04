@@ -28,9 +28,14 @@ vec3 sampleWarpedText(vec3 dir) {
 
   float halfSpan = 0.7673 * clamp(uAspect, 1.0, 2.0);
   vec2 p = dir.xy / (-dir.z) / halfSpan;
+
+  // Confine text strictly to the horizontal plane: eliminates vertical spikes and spray above the white hole
+  if (abs(p.y) > 0.092) return vec3(0.0);
+
   float side = p.x < 0.0 ? -1.0 : 1.0;
   float d = abs(p.x);
 
+  // Invert d(a) by bisection (d(a) is monotonic increasing).
   float lo = 0.0;
   float hi = 1.0;
   for (int i = 0; i < 14; i++) {
@@ -39,10 +44,8 @@ vec3 sampleWarpedText(vec3 dir) {
   }
   float a = 0.5 * (lo + hi);
 
-  float e = 0.01;
-  float stretch = (infallPosition(a + e, pull) - infallPosition(a - e, pull)) / (2.0 * e);
-  stretch = max(stretch, 0.02);
-  float ySrc = p.y * stretch;
+  // Keep vertical coordinate bounded to the font height (no vertical blowup into the sky)
+  float ySrc = p.y;
 
   const float canvasWidth = 0.8;
   const float wordCenter = 0.62;

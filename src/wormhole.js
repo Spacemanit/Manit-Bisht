@@ -11,155 +11,162 @@ const STAR_COLORS = [
 ];
 
 // ---------------------------------------------------------------------------
-// 1. 3D GRAVITATIONAL FUNNEL GEOMETRY
+// 1. INTERSTELLAR 3D SPHERICAL WORMHOLE (Morris-Thorne / Ellis Spacetime Metric)
 // ---------------------------------------------------------------------------
+// A traversable wormhole in 3D space is a spherical crystal lens (as in Christopher Nolan's Interstellar).
+// Light passing outside the spherical throat bends gravitationally around the rim,
+// creating an Einstein ring of our galaxy (Universe A).
+// Inside the spherical aperture, light from the destination galaxy (Universe B) passes through the throat,
+// magnified and refracted into concentric circles.
 
-function createFunnelGeometry(rimRadius = 14.0, throatRadius = 2.8, depth = 24.0, radialSegs = 72, heightSegs = 72) {
-  const geo = new THREE.BufferGeometry();
-  const positions = [];
-  const uvs = [];
-  const indices = [];
-
-  for (let i = 0; i <= heightSegs; i++) {
-    const v = i / heightSegs; // 0 = wide outer space rim, 1 = singularity throat
-    // Flamm's paraboloid-style steepening curvature
-    const z = -v * depth;
-    const r = throatRadius + (rimRadius - throatRadius) * Math.pow(1.0 - v, 2.6);
-
-    for (let j = 0; j <= radialSegs; j++) {
-      const u = j / radialSegs;
-      const theta = u * Math.PI * 2;
-      const x = r * Math.cos(theta);
-      const y = r * Math.sin(theta);
-
-      positions.push(x, y, z);
-      uvs.push(u, v);
-    }
-  }
-
-  for (let i = 0; i < heightSegs; i++) {
-    for (let j = 0; j < radialSegs; j++) {
-      const a = i * (radialSegs + 1) + j;
-      const b = (i + 1) * (radialSegs + 1) + j;
-      const c = (i + 1) * (radialSegs + 1) + (j + 1);
-      const d = i * (radialSegs + 1) + (j + 1);
-      indices.push(a, b, d);
-      indices.push(b, c, d);
-    }
-  }
-
-  geo.setIndex(indices);
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
-  geo.computeVertexNormals();
-  return geo;
-}
-
-// ---------------------------------------------------------------------------
-// 2. GRAVITATIONALLY LENSED STARFIELD FUNNEL (No neon colors, pure space)
-// ---------------------------------------------------------------------------
-
-export function createWormholeEntrance(skyTexture) {
+export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
   const group = new THREE.Group();
   group.name = "WormholeEntrance";
 
-  const funnelGeo = createFunnelGeometry(14.0, 2.8, 24.0, 72, 72);
+  const THROAT_RADIUS = 5.6;
+  const BOUND_RADIUS = 18.0;
 
-  // Shader: Bends the actual background starfield through gravitational curvature
-  const funnelMat = new THREE.ShaderMaterial({
+  const sphereGeo = new THREE.SphereGeometry(BOUND_RADIUS, 64, 48);
+
+  const sphereMat = new THREE.ShaderMaterial({
     uniforms: {
       uTime: { value: 0 },
-      uHover: { value: 0 },
+      uCamera: { value: new THREE.Vector3() },
       uSky: { value: skyTexture },
+      uDestSky: { value: destSkyTexture || skyTexture },
+      uRadius: { value: THROAT_RADIUS },
+      uBound: { value: BOUND_RADIUS },
     },
     vertexShader: `
-      varying vec2 vUv;
-      varying vec3 vNormal;
       varying vec3 vWorldPos;
       void main() {
-        vUv = uv;
-        vNormal = normalize(normalMatrix * normal);
         vec4 worldP = modelMatrix * vec4(position, 1.0);
         vWorldPos = worldP.xyz;
         gl_Position = projectionMatrix * viewMatrix * worldP;
       }
     `,
     fragmentShader: `
-      uniform float uTime;
-      uniform float uHover;
+      uniform vec3 uCamera;
       uniform samplerCube uSky;
-      varying vec2 vUv;
-      varying vec3 vNormal;
+      uniform samplerCube uDestSky;
+      uniform float uRadius;
+      uniform float uBound;
+      uniform float uTime;
       varying vec3 vWorldPos;
 
-      float hash(vec2 p) {
-        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-      }
-
       void main() {
-        // vUv.x: polar angle [0, 1]
-        // vUv.y: depth down the funnel [0 = rim, 1 = singularity throat]
-        float depth = vUv.y;
-        float theta = vUv.x * 6.28318;
+        vec3 cam = uCamera;
+        float camDist = length(cam);
+        bool insideBound = camDist < uBound;
 
-        vec3 rayDir = normalize(vWorldPos - cameraPosition);
-        vec3 N = normalize(vNormal);
+        // Discard near face if camera is inside bounding sphere; discard far face if outside
+        if (insideBound == gl_FrontFacing) discard;
 
-        // 1. Gravitational Deflection Vector:
-        // As rays plunge deeper into the gravity well, light curves inward toward the central axis
-        vec3 inwardAxis = normalize(vec3(-vWorldPos.xy, 0.0));
-        float bendStrength = pow(depth, 1.6) * 1.8 + uHover * 0.3;
+        vec3 dir = normalize(vWorldPos - cam);
 
-        // Frame-dragging swirl around the singularity throat
-        float swirl = depth * 6.0 - uTime * 0.8;
-        float cosS = cos(swirl);
-        float sinS = sin(swirl);
-        mat2 dragMatrix = mat2(cosS, -sinS, sinS, cosS);
+        // Distance along ray to point of closest approach to center (0, 0, 0)
+        float t_closest = -dot(cam, dir);
 
-        vec3 deflectedRay = normalize(rayDir + inwardAxis * bendStrength);
-        deflectedRay.xy = mix(deflectedRay.xy, dragMatrix * deflectedRay.xy, depth * 0.7);
+        if (t_closest <= 0.0) {
+          gl_FragColor = textureCube(uSky, dir);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+          return;
+        }
 
-        // Sample the actual celestial starfield along the gravitationally bent ray!
-        vec3 stars = textureCube(uSky, normalize(deflectedRay)).rgb;
+        vec3 pClosest = cam + dir * t_closest;
+        float b = length(pClosest); // Impact parameter
+        vec3 uPerp = b > 1e-5 ? pClosest / b : vec3(0.0, 1.0, 0.0);
 
-        // Gravitational lens magnification & shearing of stars along the funnel
-        float shearFactor = 1.0 + depth * 1.5;
-        stars *= shearFactor;
+        vec3 finalColor = vec3(0.0);
+        float alpha = 1.0;
+        float r0 = uRadius;
 
-        // Singularity Event Horizon Absorption:
-        // Inside the innermost throat (depth > 0.95), all light is swallowed into pure black
-        float eventHorizon = smoothstep(0.93, 0.985, depth);
-        stars *= (1.0 - eventHorizon);
+        if (camDist < r0) {
+          // Camera has penetrated the throat sphere into Universe B
+          vec3 rayB = normalize(vec3(dir.x, dir.y, -dir.z));
+          finalColor = textureCube(uDestSky, rayB).rgb;
+          alpha = 1.0;
+        } else if (b < r0) {
+          // Ray traverses through the throat into Universe B (Interstellar other galaxy)
+          float halfChord = sqrt(max(0.0, r0 * r0 - b * b));
+          float tHit = t_closest - halfChord;
+          vec3 pHit = cam + dir * tHit;
 
-        // Subtle gravitational redshift/blueshift (subtle warm/cool shift, strictly realistic)
-        float dopplerShift = 1.0 + 0.15 * sin(theta + uTime * 0.5);
-        stars *= vec3(dopplerShift * 0.97, dopplerShift, dopplerShift * 1.03);
+          float beta = b / r0; // [0, 1)
 
-        // Faint rim atmosphere / subtle hover glow
-        float rimGlow = smoothstep(0.15, 0.0, depth) * (0.15 + uHover * 0.35);
-        stars += vec3(0.8, 0.9, 1.0) * rimGlow;
+          // Curvature refraction across the negative spatial throat
+          float thetaBend = asin(beta) + 0.45 * (beta / sqrt(max(1.0 - beta * beta, 0.04)));
+          vec3 rayB = normalize(dir * cos(thetaBend * 0.5) + uPerp * sin(thetaBend * 0.5));
+          vec3 sampleB = normalize(vec3(rayB.x, rayB.y, -rayB.z));
+          vec3 colorB = textureCube(uDestSky, sampleB).rgb;
 
-        // Discard inside singularity hole
-        if (depth > 0.99) discard;
+          // Gravitational lens magnification near the throat rim
+          float magB = 1.0 + 0.85 * pow(beta, 3.0);
+          colorB *= magB;
 
-        gl_FragColor = vec4(stars, 1.0);
+          // Razor-sharp luminous Einstein ring at the limb
+          float limbDist = r0 - b;
+          float caustic = exp(-pow(limbDist / 0.09, 2.0));
+          vec3 causticCol = vec3(0.92, 0.96, 1.05) * caustic * 2.4;
+
+          finalColor = colorB + causticCol;
+          alpha = 1.0;
+        } else {
+          // Ray passes outside throat into Universe A (gravitationally bent background stars)
+          float beta = b / r0; // [1, inf)
+
+          // Gravitational deflection angle for Ellis metric
+          float deltaTheta = 0.80 * (r0 / b) / sqrt(max(beta * beta - 0.98, 0.02));
+          float deflAngle = min(deltaTheta, 1.45);
+
+          // Subtle physical chromatic dispersion
+          vec3 rayR = normalize(dir - uPerp * sin(deflAngle * 1.018));
+          vec3 rayG = normalize(dir - uPerp * sin(deflAngle * 1.000));
+          vec3 rayB = normalize(dir - uPerp * sin(deflAngle * 0.982));
+
+          vec3 colorA = vec3(
+            textureCube(uSky, rayR).r,
+            textureCube(uSky, rayG).g,
+            textureCube(uSky, rayB).b
+          );
+
+          // Tangential magnification of stars near the outer Einstein ring
+          float magA = 1.0 + 0.75 / ((beta - 1.0) * 4.5 + 0.22);
+          colorA *= clamp(magA, 1.0, 3.2);
+
+          // Caustic Einstein ring at the limb
+          float limbDist = b - r0;
+          float caustic = exp(-pow(limbDist / 0.09, 2.0));
+          vec3 causticCol = vec3(0.92, 0.96, 1.05) * caustic * 2.4;
+
+          finalColor = colorA + causticCol;
+
+          // Seamless edge fade into deep space
+          alpha = 1.0 - smoothstep(uBound * 0.78, uBound * 0.96, b);
+        }
+
+        gl_FragColor = vec4(finalColor, alpha);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
       }
     `,
     side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
   });
 
-  const funnelMesh = new THREE.Mesh(funnelGeo, funnelMat);
-  funnelMesh.name = "WormholeFunnelMesh";
-  // Pitch funnel 38° towards camera so we look down into the throat
-  funnelMesh.rotation.x = 0.66;
-  group.add(funnelMesh);
+  const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+  sphereMesh.name = "InterstellarSphericalWormhole";
+  group.add(sphereMesh);
 
-  // Click target cone matching funnel mouth
-  const hitGeo = new THREE.ConeGeometry(13.5, 18.0, 16);
+  sphereMesh.onBeforeRender = (_renderer, _scene, camera) => {
+    camera.getWorldPosition(sphereMat.uniforms.uCamera.value);
+  };
+
+  const hitGeo = new THREE.SphereGeometry(THROAT_RADIUS, 16, 16);
   const hitMat = new THREE.MeshBasicMaterial({ visible: false });
   const hitMesh = new THREE.Mesh(hitGeo, hitMat);
-  hitMesh.rotation.x = 0.66 + Math.PI;
-  hitMesh.position.z = -8.0;
   hitMesh.name = "WormholeHitTarget";
   group.add(hitMesh);
 
@@ -167,13 +174,12 @@ export function createWormholeEntrance(skyTexture) {
 
   return {
     group,
-    funnelMesh,
+    sphereMesh,
+    funnelMesh: sphereMesh, // Alias for backward compatibility
     hitMesh,
-    update: (time, hoverVal) => {
-      funnelMat.uniforms.uTime.value = time;
-      funnelMat.uniforms.uHover.value = hoverVal;
-      // Gentle gravitational precession around funnel axis
-      funnelMesh.rotation.z = time * 0.05;
+    update: (time, _hoverVal = 0) => {
+      sphereMat.uniforms.uTime.value = time;
+      sphereMesh.rotation.y = time * 0.02;
     },
   };
 }
