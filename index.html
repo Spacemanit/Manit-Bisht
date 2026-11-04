@@ -30,8 +30,12 @@
   <canvas id="three-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1;"></canvas>
   <canvas id="console-canvas" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 2; pointer-events: none; text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;"></canvas>
+  <div id="wormhole-hud" style="display: none; position: fixed; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 3; color: #e2e8f0; font-family: 'Michroma', sans-serif; font-size: 13px; letter-spacing: 4px; pointer-events: none; text-shadow: 0 0 12px rgba(255,255,255,0.5); opacity: 0; transition: opacity 0.6s ease; user-select: none;">
+    [ SCROLL TO ENTER WORMHOLE ]
+  </div>
+  <div id="hyperspace-flash" style="display: none; position: fixed; inset: 0; background: #ffffff; z-index: 10; pointer-events: none; opacity: 0; transition: opacity 0.4s ease;"></div>
   <div id="scroll-spacer"
-    style="height: 2000vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></div>
+    style="height: max(25000px, 2500vh); width: 100%; position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></div>
 
   <script type="module" src="src/main.js" defer></script>
 </body>
