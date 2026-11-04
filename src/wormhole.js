@@ -24,7 +24,7 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
   group.name = "WormholeEntrance";
 
   const THROAT_RADIUS = 5.6;
-  const BOUND_RADIUS = 18.0;
+  const BOUND_RADIUS = 50.0;
 
   const sphereGeo = new THREE.SphereGeometry(BOUND_RADIUS, 64, 48);
 
@@ -38,11 +38,10 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
       uBound: { value: BOUND_RADIUS },
     },
     vertexShader: `
-      varying vec3 vWorldPos;
+      varying vec3 vLocalPos;
       void main() {
-        vec4 worldP = modelMatrix * vec4(position, 1.0);
-        vWorldPos = worldP.xyz;
-        gl_Position = projectionMatrix * viewMatrix * worldP;
+        vLocalPos = position;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
     fragmentShader: `
@@ -52,7 +51,7 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
       uniform float uRadius;
       uniform float uBound;
       uniform float uTime;
-      varying vec3 vWorldPos;
+      varying vec3 vLocalPos;
 
       void main() {
         vec3 cam = uCamera;
@@ -62,7 +61,7 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
         // Discard near face if camera is inside bounding sphere; discard far face if outside
         if (insideBound == gl_FrontFacing) discard;
 
-        vec3 dir = normalize(vWorldPos - cam);
+        vec3 dir = normalize(vLocalPos - cam);
 
         // Distance along ray to point of closest approach to center (0, 0, 0)
         float t_closest = -dot(cam, dir);
@@ -141,9 +140,7 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
           vec3 causticCol = vec3(0.92, 0.96, 1.05) * caustic * 2.4;
 
           finalColor = colorA + causticCol;
-
-          // Seamless edge fade into deep space
-          alpha = 1.0 - smoothstep(uBound * 0.78, uBound * 0.96, b);
+          alpha = insideBound ? 1.0 : (1.0 - smoothstep(uBound * 0.78, uBound * 0.96, b));
         }
 
         gl_FragColor = vec4(finalColor, alpha);
@@ -162,6 +159,7 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
 
   sphereMesh.onBeforeRender = (_renderer, _scene, camera) => {
     camera.getWorldPosition(sphereMat.uniforms.uCamera.value);
+    sphereMesh.worldToLocal(sphereMat.uniforms.uCamera.value);
   };
 
   const hitGeo = new THREE.SphereGeometry(THROAT_RADIUS, 16, 16);
@@ -177,9 +175,10 @@ export function createWormholeEntrance(skyTexture, destSkyTexture = null) {
     sphereMesh,
     funnelMesh: sphereMesh, // Alias for backward compatibility
     hitMesh,
-    update: (time, _hoverVal = 0) => {
+    update: (time, rotX = 0, rotY = 0) => {
       sphereMat.uniforms.uTime.value = time;
-      sphereMesh.rotation.y = time * 0.02;
+      sphereMesh.rotation.x = rotX;
+      sphereMesh.rotation.y = rotY;
     },
   };
 }

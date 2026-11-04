@@ -99,7 +99,7 @@ function addConsole() {
   const visibleCharsCount = Math.floor(scrollPercent * totalChars);
 
   ctx.fillStyle = "#00ff66";
-  ctx.font = '25px "DeadCRT", monospace';
+  ctx.font = '25px Michroma, monospace';
 
   let charCounter = 0;
   let startX = 40;
@@ -244,10 +244,12 @@ function animate(now = performance.now()) {
     consoleCanvas.style.display = "none";
   }
 
-  // Wormhole Entrance Funnel:
+  // Wormhole Entrance:
   wormholeEntrance.group.visible = isFunnel;
   if (wormholeEntrance.group.visible) {
-    wormholeEntrance.update(now / 1000, 0.0);
+    const rotY = reducedMotion.matches ? 0 : mouse.x * 0.2;
+    const rotX = 0.45 - (reducedMotion.matches ? 0 : mouse.y * 0.2);
+    wormholeEntrance.update(now / 1000, rotX, rotY);
   }
 
   // Wormhole Tunnel:
