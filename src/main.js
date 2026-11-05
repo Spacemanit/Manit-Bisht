@@ -13,12 +13,17 @@ import {
   FLASH_PEAK_START,
   FLASH_PEAK_END,
   WHITE_HOLE_REVEAL_END,
+  WHITE_HOLE_HOLD_END,
+  CONTACT_REVEAL_START,
+  CONTACT_REVEAL_END,
+  TOTAL_MAX_SCROLL,
   WHITE_HOLE_MAX_SCROLL,
 } from "./thresholds.js";
 import {
   createWormholeEntrance,
   createWormholeCurve,
   createWormholeTunnel,
+  createWhiteHoleLogoSplash,
 } from "./wormhole.js";
 
 // Create scene, camera, and renderer
@@ -26,6 +31,18 @@ const mainCanvas = document.querySelector("#three-canvas");
 const consoleCanvas = document.querySelector("#console-canvas");
 const wormholeHud = document.querySelector("#wormhole-hud");
 const hyperspaceFlash = document.querySelector("#hyperspace-flash");
+const wormholeYearHud = document.querySelector("#wormhole-year-hud");
+const yearHudValue = document.querySelector("#year-hud-value");
+const yearHudFill = document.querySelector("#year-hud-fill");
+const yearHudPip = document.querySelector("#year-hud-pip");
+const contactSection = document.querySelector("#contact-section");
+const backToTopBtn = document.querySelector("#back-to-top-btn");
+
+if (backToTopBtn) {
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(
@@ -70,20 +87,32 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 // CONSOLE TEXT
 // ---------------------------------------------------------------------------
 function addConsole() {
-  const fullText = `root@system:~# initializing protocol...\n[OK] Created console.\n[OK] Established link with human\n> System online. Hello Manit\n> I have been waiting for you to enter\n> You are now...\n> ${ageChronos.years} years, ${ageChronos.months} months, ${ageChronos.days} days old\n\n> Exiting into outer space...`;
+  const fullText = [
+    "> initializing protocol...",
+    "> established link with traveler",
+    "> system online. Hello Manit",
+    "> I have been waiting for you to enter",
+    "> you are now...",
+    `> ${ageChronos.years} years, ${ageChronos.months} months, ${ageChronos.days} days old`,
+    "> exiting into outer space...",
+  ].join("\n");
   const lines = fullText.split("\n");
 
-  const customScale = 1;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const width = window.innerWidth;
+  const height = window.innerHeight;
 
-  consoleCanvas.width = window.innerWidth * customScale;
-  consoleCanvas.height = window.innerHeight * customScale;
-
-  consoleCanvas.style.width = window.innerWidth + "px";
-  consoleCanvas.style.height = window.innerHeight + "px";
+  if (consoleCanvas.width !== width * dpr || consoleCanvas.height !== height * dpr) {
+    consoleCanvas.width = width * dpr;
+    consoleCanvas.height = height * dpr;
+    consoleCanvas.style.width = width + "px";
+    consoleCanvas.style.height = height + "px";
+  }
 
   const ctx = consoleCanvas.getContext("2d");
-  ctx.scale(customScale, customScale);
-  ctx.clearRect(0, 0, consoleCanvas.width, consoleCanvas.height);
+  ctx.save();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
 
   const scrollTriggerPoint = CONSOLE_APPEAR;
   const maxScroll = CONSOLE_TYPED;
@@ -99,12 +128,14 @@ function addConsole() {
   const visibleCharsCount = Math.floor(scrollPercent * totalChars);
 
   ctx.fillStyle = "#00ff66";
-  ctx.font = '25px Michroma, monospace';
+  ctx.font = '500 19px "JetBrains Mono", monospace';
+  ctx.shadowColor = "rgba(0, 255, 102, 0.4)";
+  ctx.shadowBlur = 8;
 
   let charCounter = 0;
-  let startX = 40;
-  let startY = 60;
-  const lineHeight = 30;
+  const startX = Math.max(32, Math.floor(width * 0.04));
+  const startY = Math.max(50, Math.floor(height * 0.08));
+  const lineHeight = 36;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -118,13 +149,14 @@ function addConsole() {
       const partialLine = line.substring(0, lineRemaining);
       ctx.fillText(partialLine, startX, startY + i * lineHeight);
 
-      if (Math.floor(Date.now() / 400) % 3 === 0) {
+      if (Math.floor(Date.now() / 350) % 2 === 0) {
         const textWidth = ctx.measureText(partialLine).width;
-        ctx.fillText("|", startX + textWidth, startY + i * lineHeight);
+        ctx.fillText("█", startX + textWidth + 6, startY + i * lineHeight);
       }
       break;
     }
   }
+  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------
@@ -150,6 +182,10 @@ const wormholeCurve = createWormholeCurve();
 const wormholeTunnel = createWormholeTunnel(wormholeCurve, blackholeSky);
 scene.add(wormholeTunnel.group);
 wormholeTunnel.group.visible = false;
+
+// White Hole Logo Splash (Tech Ejection Outburst)
+const whiteHoleSplash = createWhiteHoleLogoSplash();
+scene.add(whiteHoleSplash.group);
 
 // Camera distances for Black Hole, Zoomout, and White Hole
 const START_CAMERA_Z = 16.67;
@@ -255,6 +291,9 @@ function animate(now = performance.now()) {
   // Wormhole Tunnel:
   wormholeTunnel.group.visible = isTunnel;
 
+  // White Hole Logo Splash Outburst:
+  whiteHoleSplash.update(currentScroll, now / 1000, mouse);
+
   // Subtle HUD scroll prompt (only shown briefly in zoomout phase)
   if (wormholeHud) {
     const showHud = currentScroll >= 5200 && currentScroll < 6200;
@@ -262,7 +301,42 @@ function animate(now = performance.now()) {
     wormholeHud.style.opacity = showHud ? "1" : "0";
   }
 
+  // Right-Middle Year Progress Bar HUD in Wormhole Tunnel (7200 -> 16800px)
+  if (wormholeYearHud) {
+    const showYearHud = currentScroll >= WORMHOLE_TUNNEL_START && currentScroll < FLASH_PEAK_START;
+    wormholeYearHud.style.display = showYearHud ? "block" : "none";
+    wormholeYearHud.style.opacity = showYearHud ? "1" : "0";
+
+    if (showYearHud) {
+      const progress = getTunnelProgress(currentScroll); // 0.0 -> 1.0
+      const pct = Math.min(100, Math.max(0, progress * 100));
+
+      if (yearHudFill) yearHudFill.style.height = `${pct}%`;
+      if (yearHudPip) yearHudPip.style.top = `${pct}%`;
+
+      // Year milestones along the wormhole spline:
+      // 2023: IAAC medal (t = 0.16)
+      // 2025: B.Tech in VIT (t = 0.38)
+      // 2026: the-button (t = 0.62) & SPNT (t = 0.84)
+      let activeYear = "2023";
+      if (progress >= 0.28 && progress < 0.50) {
+        activeYear = "2025";
+      } else if (progress >= 0.50) {
+        activeYear = "2026";
+      }
+
+      if (yearHudValue) {
+        yearHudValue.textContent = activeYear;
+      }
+    }
+  }
+
   // 2. Camera Trajectory and Transit Phases
+  if (contactSection && currentScroll < CONTACT_REVEAL_START) {
+    contactSection.style.opacity = "0";
+    contactSection.style.transform = "translateY(105%)";
+    contactSection.style.pointerEvents = "none";
+  }
 
   // Phase A: Black Hole Approach & Singularity (0 -> 4500px)
   if (currentScroll < CONSOLE_DISAPPEAR) {
@@ -411,6 +485,12 @@ function animate(now = performance.now()) {
       hyperspaceFlash.style.opacity = `${Math.max(0, 1.0 - t)}`;
     }
 
+    if (contactSection) {
+      contactSection.style.opacity = "0";
+      contactSection.style.transform = "translateY(105%)";
+      contactSection.style.pointerEvents = "none";
+    }
+
     // Camera pulls back to majestic home distance (16.67)
     const eased = t * t * (3 - 2 * t);
     const cameraZ = 5.0 + eased * (START_CAMERA_Z - 5.0);
@@ -420,17 +500,47 @@ function animate(now = performance.now()) {
     whiteHole.material.uniforms.uZoomProgress.value = 1.0 - eased;
   }
 
-  // Phase G: Home with the White Hole (19200px+)
-  else {
+  // Phase G: White Hole Centerpiece Hold (19200 -> 20500px)
+  else if (currentScroll < CONTACT_REVEAL_START) {
     if (hyperspaceFlash) {
       hyperspaceFlash.style.display = "none";
       hyperspaceFlash.style.opacity = "0";
+    }
+
+    if (contactSection) {
+      contactSection.style.opacity = "0";
+      contactSection.style.transform = "translateY(105%)";
+      contactSection.style.pointerEvents = "none";
     }
 
     camera.position.set(0, 0, START_CAMERA_Z);
     camera.up.set(0, 1, 0);
     camera.lookAt(0, 0, 0);
     whiteHole.material.uniforms.uZoomProgress.value = 0.0;
+  }
+
+  // Phase H: Camera Tilts Up & Contact Section Glides In (20500px -> 23000px+)
+  else {
+    if (hyperspaceFlash) {
+      hyperspaceFlash.style.display = "none";
+      hyperspaceFlash.style.opacity = "0";
+    }
+
+    const t = Math.min(1.0, (currentScroll - CONTACT_REVEAL_START) / (CONTACT_REVEAL_END - CONTACT_REVEAL_START));
+    const eased = t * t * (3 - 2 * t);
+
+    // Smoothly tilt camera down and look upward so the White Hole shifts to the upper sky
+    camera.position.set(0, -eased * 4.2, START_CAMERA_Z);
+    camera.up.set(0, 1, 0);
+    camera.lookAt(0, eased * 2.2, 0);
+    whiteHole.material.uniforms.uZoomProgress.value = 0.0;
+
+    if (contactSection) {
+      contactSection.style.display = "block";
+      contactSection.style.opacity = `${Math.min(1.0, eased * 1.5)}`;
+      contactSection.style.transform = `translateY(${(1.0 - eased) * 105}%)`;
+      contactSection.style.pointerEvents = eased > 0.4 ? "auto" : "none";
+    }
   }
 
   renderer.render(scene, camera);

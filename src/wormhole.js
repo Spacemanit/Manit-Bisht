@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { FLASH_PEAK_START, WHITE_HOLE_REVEAL_END } from "./thresholds.js";
 
 // Realistic star spectral color palette (matching black-hole.js / starfield.js)
 const STAR_COLORS = [
@@ -206,114 +207,283 @@ export function createWormholeCurve() {
 }
 
 // ---------------------------------------------------------------------------
-// 4. MINIMALIST FROSTED GLASS ACHIEVEMENT PANELS (Crisp & Clean)
+// 4. MINIMALIST OPTICAL GLASS ACHIEVEMENT PANELS (Architectural Overhaul)
 // ---------------------------------------------------------------------------
 
 const ACHIEVEMENTS_DATA = [
   {
-    t: 0.16,
-    tag: "SPECIALIZATION // 01",
-    title: "3D Graphics & Shaders",
-    desc: "Raymarching Schwarzschild geodesics, custom GLSL pipelines, WebGL/Three.js math physics, and real-time GPU particle simulations.",
+    t: 0.17,
+    index: "01",
+    year: "2023",
+    category: "Astrophysics · Honours",
+    title: "IAAC Gold Medalist",
+    subtitle: "International Astronomy and Astrophysics Competition",
+    desc: "Awarded Final Round Gold Medalist out of thousands of global entrants. Solved advanced problems in celestial mechanics, Keplerian orbital dynamics, and spectroscopic analysis.",
+    chips: ["Astrophysics", "Orbital Mechanics", "Global Gold Medal", "Python"],
   },
   {
     t: 0.38,
-    tag: "ENGINEERING // 02",
-    title: "Full-Stack Architecture",
-    desc: "High-throughput real-time distributed platforms, performant microservices, reactive event pipelines, and secure cloud infrastructures.",
+    index: "02",
+    year: "2025",
+    category: "Higher Education",
+    title: "B.Tech Computer Science",
+    subtitle: "Vellore Institute of Technology (VIT Vellore)",
+    desc: "Maintaining a 9.0 / 10 CGPA. Core specialization in Data Structures, Algorithms, Operating Systems, Database Management Systems, and Distributed Computing.",
+    chips: ["CGPA 9.0 / 10", "Algorithms", "Operating Systems", "VIT Vellore"],
   },
   {
     t: 0.62,
-    tag: "PERFORMANCE // 03",
-    title: "Real-Time Optimization",
-    desc: "Zero-allocation animation loops, multi-threaded worker offloading, GPU geometry instancing, and sub-millisecond latency tuning.",
+    index: "03",
+    year: "2026",
+    category: "Real-Time Systems",
+    title: "the-button",
+    subtitle: "Distributed Real-Time WebSocket Platform",
+    desc: "High-concurrency global state platform inspired by Reddit's legendary experiment. Features sub-millisecond WebSocket state synchronization, atomic counter logic, and dynamic client rendering.",
+    chips: ["React", "Node.js", "Express", "Socket.IO", "WebSockets"],
   },
   {
     t: 0.84,
-    tag: "INNOVATION // 04",
-    title: "Creative Engineering",
-    desc: "Award-winning prototyper, hackathon victor, open-source contributor, bridging cinematic audiovisuals with resilient code.",
+    index: "04",
+    year: "2026",
+    category: "Fintech Platform",
+    title: "SPNT Expense Tracker",
+    subtitle: "Personal Ledger & Financial Pattern Analytics",
+    desc: "Full-stack personal expense suite designed with an architectural e-ink aesthetic. Delivers automated monthly spending breakdown, persistent Atlas cloud storage, and decoupled cloud deployment.",
+    chips: ["React", "Node.js", "MongoDB Atlas", "Vercel", "REST APIs"],
   },
 ];
 
+function drawRoundedRectPath(ctx, x, y, width, height, radius) {
+  if (typeof ctx.roundRect === "function") {
+    ctx.beginPath();
+    ctx.roundRect(x, y, width, height, radius);
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+}
+
 function createGlassAchievementCardTexture(item) {
   const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 600;
+  canvas.width = 1600;
+  canvas.height = 920;
   const ctx = canvas.getContext("2d");
 
-  // Smoked semi-transparent dark space glass
-  ctx.fillStyle = "rgba(4, 6, 12, 0.92)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const W = canvas.width;
+  const H = canvas.height;
+  const pad = 24;
+  const cardW = W - pad * 2;
+  const cardH = H - pad * 2;
+  const cornerR = 32;
 
-  // Minimalist soft glass border (subtle, no harsh white lines)
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(16, 16, canvas.width - 32, canvas.height - 32);
+  // 1. Deep Obsidian Optical Glass Surface
+  drawRoundedRectPath(ctx, pad, pad, cardW, cardH, cornerR);
+  const bgGrad = ctx.createLinearGradient(0, pad, 0, pad + cardH);
+  bgGrad.addColorStop(0.0, "rgba(13, 16, 26, 0.94)");
+  bgGrad.addColorStop(1.0, "rgba(6, 8, 14, 0.97)");
+  ctx.fillStyle = bgGrad;
+  ctx.fill();
 
-  // Subtle corner brackets
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
-  ctx.lineWidth = 3;
-  const bLen = 32;
-  // Top-left
-  ctx.beginPath(); ctx.moveTo(16, 16 + bLen); ctx.lineTo(16, 16); ctx.lineTo(16 + bLen, 16); ctx.stroke();
-  // Top-right
-  ctx.beginPath(); ctx.moveTo(canvas.width - 16 - bLen, 16); ctx.lineTo(canvas.width - 16, 16); ctx.lineTo(canvas.width - 16, 16 + bLen); ctx.stroke();
-  // Bottom-left
-  ctx.beginPath(); ctx.moveTo(16, canvas.height - 16 - bLen); ctx.lineTo(16, canvas.height - 16); ctx.lineTo(16 + bLen, canvas.height - 16); ctx.stroke();
-  // Bottom-right
-  ctx.beginPath(); ctx.moveTo(canvas.width - 16 - bLen, canvas.height - 16); ctx.lineTo(canvas.width - 16, canvas.height - 16); ctx.lineTo(canvas.width - 16, canvas.height - 16 - bLen); ctx.stroke();
+  // 2. Subtle Starlight Specular Sheen (top-center refraction)
+  ctx.save();
+  drawRoundedRectPath(ctx, pad, pad, cardW, cardH, cornerR);
+  ctx.clip();
+  const topSheen = ctx.createRadialGradient(W / 2, pad, 10, W / 2, pad, 500);
+  topSheen.addColorStop(0.0, "rgba(255, 255, 255, 0.08)");
+  topSheen.addColorStop(0.5, "rgba(180, 210, 255, 0.03)");
+  topSheen.addColorStop(1.0, "rgba(0, 0, 0, 0.0)");
+  ctx.fillStyle = topSheen;
+  ctx.fillRect(pad, pad, cardW, cardH);
+  ctx.restore();
 
-  // Tag
-  ctx.fillStyle = "#94a3b8";
-  ctx.font = '600 26px "DeadCRT", monospace';
-  ctx.fillText(item.tag, 55, 78);
-
-  // Title
-  ctx.fillStyle = "#ffffff";
-  ctx.font = '700 48px "Michroma", sans-serif';
-  ctx.fillText(item.title, 55, 168);
-
-  // Clean glass divider
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(55, 208);
-  ctx.lineTo(canvas.width - 55, 208);
+  // 3. Precision Beveled Rim (Linear Gradient Stroke)
+  drawRoundedRectPath(ctx, pad, pad, cardW, cardH, cornerR);
+  const borderGrad = ctx.createLinearGradient(pad, pad, pad + cardW, pad + cardH);
+  borderGrad.addColorStop(0.0, "rgba(255, 255, 255, 0.32)"); // crisp top-left highlight
+  borderGrad.addColorStop(0.4, "rgba(255, 255, 255, 0.12)");
+  borderGrad.addColorStop(1.0, "rgba(255, 255, 255, 0.04)"); // muted bottom-right
+  ctx.strokeStyle = borderGrad;
+  ctx.lineWidth = 2.0;
   ctx.stroke();
 
-  // Description text
+  // 4. Subtle Inner Inset Line for Glass Refraction Depth
+  drawRoundedRectPath(ctx, pad + 6, pad + 6, cardW - 12, cardH - 12, cornerR - 4);
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+  ctx.lineWidth = 1.0;
+  ctx.stroke();
+
+  // 5. Header: Index Capsule + Category Label + Year Badge
+  // 5a. Index capsule [ 01 ]
+  drawRoundedRectPath(ctx, 76, 72, 64, 38, 8);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+  ctx.lineWidth = 1.0;
+  ctx.stroke();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = '700 19px system-ui, -apple-system, sans-serif';
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(item.index, 76 + 32, 72 + 19);
+
+  // 5b. Category Label
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = '600 21px system-ui, -apple-system, sans-serif';
+  if ("letterSpacing" in ctx) ctx.letterSpacing = "2px";
+  ctx.fillText(item.category.toUpperCase(), 158, 72 + 19);
+  if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+  // 5c. Year Capsule Badge (Upper Right)
+  const badgeW = 110;
+  const badgeH = 40;
+  const badgeX = W - 76 - badgeW;
+  const badgeY = 70;
+  drawRoundedRectPath(ctx, badgeX, badgeY, badgeW, badgeH, 20);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = '700 21px system-ui, -apple-system, sans-serif';
+  ctx.textAlign = "center";
+  ctx.fillText(item.year, badgeX + badgeW / 2, badgeY + badgeH / 2);
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+
+  // 6. Title
+  ctx.fillStyle = "#ffffff";
+  ctx.font = '700 54px "Michroma", sans-serif';
+  ctx.fillText(item.title, 76, 186);
+
+  // 7. Subtitle
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = '500 26px system-ui, -apple-system, sans-serif';
+  ctx.fillText(item.subtitle, 76, 236);
+
+  // 8. Editorial Hairline Divider
+  const divGrad = ctx.createLinearGradient(76, 274, W - 76, 274);
+  divGrad.addColorStop(0.0, "rgba(255, 255, 255, 0.04)");
+  divGrad.addColorStop(0.2, "rgba(255, 255, 255, 0.14)");
+  divGrad.addColorStop(0.8, "rgba(255, 255, 255, 0.14)");
+  divGrad.addColorStop(1.0, "rgba(255, 255, 255, 0.04)");
+  ctx.strokeStyle = divGrad;
+  ctx.lineWidth = 1.0;
+  ctx.beginPath();
+  ctx.moveTo(76, 274);
+  ctx.lineTo(W - 76, 274);
+  ctx.stroke();
+
+  // 9. Narrative Body Text
   ctx.fillStyle = "#e2e8f0";
-  ctx.font = '400 32px "Michroma", sans-serif';
+  ctx.font = '400 30px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   const words = item.desc.split(" ");
   let line = "";
-  let y = 280;
-  const lineHeight = 48;
-  const maxWidth = canvas.width - 110;
+  let y = 344;
+  const lineHeight = 50;
+  const maxWidth = W - 152;
 
   for (let n = 0; n < words.length; n++) {
     const testLine = line + words[n] + " ";
     const metrics = ctx.measureText(testLine);
     if (metrics.width > maxWidth && n > 0) {
-      ctx.fillText(line, 55, y);
+      ctx.fillText(line, 76, y);
       line = words[n] + " ";
       y += lineHeight;
     } else {
       line = testLine;
     }
   }
-  ctx.fillText(line, 55, y);
+  ctx.fillText(line, 76, y);
 
-  // Status indicator
-  ctx.fillStyle = "#38bdf8";
-  ctx.font = '400 24px "DeadCRT", monospace';
-  ctx.fillText("● VERIFIED RECORD // ACTIVE", 55, 530);
+  // 10. Capability & Tech Chips (Footer Row)
+  if (item.chips && item.chips.length > 0) {
+    let chipX = 76;
+    const chipY = H - 100;
+    const chipH = 40;
+
+    ctx.font = '500 20px system-ui, -apple-system, sans-serif';
+    ctx.textBaseline = "middle";
+
+    for (let c = 0; c < item.chips.length; c++) {
+      const chipText = item.chips[c];
+      const textMetrics = ctx.measureText(chipText);
+      const chipW = textMetrics.width + 32;
+
+      drawRoundedRectPath(ctx, chipX, chipY, chipW, chipH, 20);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.14)";
+      ctx.lineWidth = 1.0;
+      ctx.stroke();
+
+      ctx.fillStyle = "#cbd5e1";
+      ctx.textAlign = "center";
+      ctx.fillText(chipText, chipX + chipW / 2, chipY + chipH / 2);
+
+      chipX += chipW + 12;
+    }
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+  }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
   return texture;
+}
+
+// ---------------------------------------------------------------------------
+// 4.5. FLOATING OFFICIAL TECH LOGO SPRITES (Direct Vector SVG Assets)
+// ---------------------------------------------------------------------------
+
+export const TECH_LOGOS = [
+  { name: "C", file: "c.svg" },
+  { name: "C++", file: "cpp.svg" },
+  { name: "C#", file: "csharp.svg" },
+  { name: "Java", file: "java.svg" },
+  { name: "Python", file: "python.svg" },
+  { name: "MySQL", file: "mysql.svg" },
+  { name: "MongoDB", file: "mongodb.svg" },
+  { name: "Javascript", file: "javascript.svg" },
+  { name: "HTML", file: "html.svg" },
+  { name: "Typescript", file: "typescript.svg" },
+  { name: "CSS", file: "css.svg" },
+  { name: "TailwindCSS", file: "tailwindcss.svg" },
+  { name: "ReactJS", file: "react.svg" },
+  { name: "NodeJS", file: "nodejs.svg" },
+  { name: "Express", file: "express.svg" },
+  { name: "Git", file: "git.svg" },
+  { name: "Github", file: "github.svg" },
+  { name: "VScode", file: "vscode.svg" },
+  { name: "Linux", file: "linux.svg" },
+  { name: "Arch Linux", file: "archlinux.svg" },
+  { name: "CachyOS", file: "cachyos.svg" },
+  { name: "Windows", file: "windows.svg" },
+  { name: "Vercel", file: "vercel.svg" },
+  { name: "Render", file: "render.svg" },
+];
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 // Soft circular radial gradient texture for subtle cosmic debris dots (no square blocks)
@@ -480,12 +650,75 @@ export function createWormholeTunnel(curve, skyTexture) {
   const particles = new THREE.Points(particleGeo, particleMat);
   group.add(particles);
 
+  // Floating Tech Logos drifting among cosmic debris in random order
+  const logoSprites = [];
+  const shuffledTech = shuffleArray(TECH_LOGOS);
+  const totalLogos = shuffledTech.length;
+  const textureLoader = new THREE.TextureLoader();
+  const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
+    ? import.meta.env.BASE_URL
+    : "./";
+
+  for (let idx = 0; idx < totalLogos; idx++) {
+    const item = shuffledTech[idx];
+    const tex = textureLoader.load(`${baseUrl}tech-icons/${item.file}`);
+    tex.colorSpace = THREE.SRGBColorSpace;
+
+    // Distribute along tunnel curve between t = 0.05 and 0.94
+    const baseT = 0.05 + (idx / totalLogos) * 0.89;
+    const jitter = (Math.random() - 0.5) * 0.02;
+    let t = THREE.MathUtils.clamp(baseT + jitter, 0.04, 0.95);
+
+    // Keep clear of achievement cards
+    for (const card of ACHIEVEMENTS_DATA) {
+      if (Math.abs(t - card.t) < 0.025) {
+        t += (t >= card.t ? 0.03 : -0.03);
+      }
+    }
+    t = THREE.MathUtils.clamp(t, 0.04, 0.95);
+
+    const pt = curve.getPointAt(t);
+    const tangent = curve.getTangentAt(t).normalize();
+    let up = new THREE.Vector3(0, 1, 0);
+    if (Math.abs(tangent.dot(up)) > 0.9) up.set(1, 0, 0);
+    const normal = up.clone().cross(tangent).normalize();
+    const binormal = tangent.clone().cross(normal).normalize();
+
+    // Random radial position floating between 2.8 and 5.5 units from center
+    const r = 2.8 + Math.random() * 2.7;
+    const ang = Math.random() * Math.PI * 2;
+    const offset = normal.clone().multiplyScalar(Math.cos(ang) * r)
+      .add(binormal.clone().multiplyScalar(Math.sin(ang) * r));
+
+    const pos = pt.clone().add(offset);
+
+    const spriteMat = new THREE.SpriteMaterial({
+      map: tex,
+      transparent: true,
+      opacity: 0.92,
+      depthWrite: false,
+      blending: THREE.NormalBlending,
+    });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(1.9, 1.9, 1.0);
+    sprite.position.copy(pos);
+    group.add(sprite);
+
+    logoSprites.push({
+      sprite,
+      basePos: pos.clone(),
+      driftAxis: binormal.clone().multiplyScalar(Math.random() > 0.5 ? 1 : -1),
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.8 + Math.random() * 0.8,
+    });
+  }
+
   // Mount Minimalist Glass Achievement Cards on Walls
   const cards = [];
   for (let idx = 0; idx < ACHIEVEMENTS_DATA.length; idx++) {
     const item = ACHIEVEMENTS_DATA[idx];
     const cardTex = createGlassAchievementCardTexture(item);
-    const cardGeo = new THREE.PlaneGeometry(8.2, 4.6);
+    const cardGeo = new THREE.PlaneGeometry(8.4, 4.83);
     const cardMat = new THREE.MeshBasicMaterial({
       map: cardTex,
       transparent: true,
@@ -523,6 +756,120 @@ export function createWormholeTunnel(curve, skyTexture) {
       tubeMat.uniforms.uTime.value = time;
       tubeMat.uniforms.uProgress.value = progress;
       tubeMat.uniforms.uSpeed.value = speedVal;
+
+      // Weightless floating drift of tech logos
+      for (let i = 0; i < logoSprites.length; i++) {
+        const item = logoSprites[i];
+        const drift = Math.sin(time * item.speed + item.phase) * 0.22;
+        item.sprite.position.copy(item.basePos).addScaledVector(item.driftAxis, drift);
+      }
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// 6. WHITE HOLE LOGO SPLASH (Cosmic Ejection Burst)
+// ---------------------------------------------------------------------------
+// When the white hole appears, all tech logos violently and elegantly splash
+// outward from the singularity core toward the screen and drift in space.
+
+export function createWhiteHoleLogoSplash() {
+  const group = new THREE.Group();
+  group.name = "WhiteHoleLogoSplash";
+  group.visible = false;
+
+  const textureLoader = new THREE.TextureLoader();
+  const baseUrl = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
+    ? import.meta.env.BASE_URL
+    : "./";
+
+  const shuffled = shuffleArray(TECH_LOGOS);
+  const total = shuffled.length;
+  const splashSprites = [];
+
+  for (let i = 0; i < total; i++) {
+    const item = shuffled[i];
+    const tex = textureLoader.load(`${baseUrl}tech-icons/${item.file}`);
+    tex.colorSpace = THREE.SRGBColorSpace;
+
+    // Distribute into 2 radial layers for deep cinematic spread
+    const isOuter = i >= 10;
+    const ringIndex = isOuter ? i - 10 : i;
+    const ringCount = isOuter ? 14 : 10;
+    const angle = (ringIndex / ringCount) * Math.PI * 2 + (isOuter ? 0.22 : 0.0) + (Math.random() - 0.5) * 0.25;
+
+    // Dispersal distance
+    const distR = isOuter ? 8.5 + Math.random() * 4.5 : 4.2 + Math.random() * 3.5;
+
+    // Target coordinates: spread across 16:9 viewport
+    const targetX = Math.cos(angle) * distR * 1.35;
+    const targetY = Math.sin(angle) * distR * 0.95;
+    // Splash forward towards the camera (camera pulls back to z = 16.67, white hole at z = 0)
+    const targetZ = 1.5 + Math.random() * 7.5;
+
+    const baseScale = 0.4 + Math.random() * 0.45;
+
+    const spriteMat = new THREE.SpriteMaterial({
+      map: tex,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      blending: THREE.NormalBlending,
+    });
+
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(0.001, 0.001, 1.0);
+    sprite.position.set(0, 0, 0);
+    group.add(sprite);
+
+    splashSprites.push({
+      sprite,
+      mat: spriteMat,
+      targetX,
+      targetY,
+      targetZ,
+      baseScale,
+      seed: Math.random() * 100,
+      burstDelay: Math.random() * 0.12,
+    });
+  }
+
+  function update(scroll, time, mouse) {
+    if (scroll < FLASH_PEAK_START) {
+      group.visible = false;
+      return;
+    }
+
+    group.visible = true;
+
+    // Progress: 0.0 at FLASH_PEAK_START (16800) -> 1.0 at WHITE_HOLE_REVEAL_END (19200)
+    const rawProgress = (scroll - FLASH_PEAK_START) / (WHITE_HOLE_REVEAL_END - FLASH_PEAK_START);
+    const progress = THREE.MathUtils.clamp(rawProgress, 0.0, 1.0);
+
+    for (let i = 0; i < splashSprites.length; i++) {
+      const item = splashSprites[i];
+      const p = THREE.MathUtils.clamp((progress - item.burstDelay) / (1.0 - item.burstDelay), 0.0, 1.0);
+
+      // Fast explosive burst with smooth settling
+      const eased = 1.0 - Math.pow(1.0 - p, 3.2);
+
+      // Weightless zero-g drift
+      const driftX = Math.sin(time * 1.2 + item.seed) * 0.22;
+      const driftY = Math.cos(time * 1.0 + item.seed * 1.3) * 0.22;
+
+      // Mouse parallax
+      const mouseParallaxX = (mouse ? mouse.x : 0) * 0.45 * (item.targetZ / 10.0);
+      const mouseParallaxY = (mouse ? mouse.y : 0) * 0.35 * (item.targetZ / 10.0);
+
+      item.sprite.position.x = (item.targetX * eased) + (driftX * eased) + (mouseParallaxX * eased);
+      item.sprite.position.y = (item.targetY * eased) + (driftY * eased) + (mouseParallaxY * eased);
+      item.sprite.position.z = item.targetZ * eased;
+
+      const currentScale = item.baseScale * Math.min(1.0, eased * 1.5);
+      item.sprite.scale.set(currentScale, currentScale, 1.0);
+      item.mat.opacity = Math.min(1.0, eased * 2.2);
+    }
+  }
+
+  return { group, update };
 }
