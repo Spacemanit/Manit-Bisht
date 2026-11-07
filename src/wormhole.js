@@ -212,7 +212,7 @@ export function createWormholeCurve() {
 
 const ACHIEVEMENTS_DATA = [
   {
-    t: 0.17,
+    t: 0.165,
     index: "01",
     year: "2023",
     category: "Astrophysics · Honours",
@@ -222,7 +222,7 @@ const ACHIEVEMENTS_DATA = [
     chips: ["Astrophysics", "Orbital Mechanics", "Global Gold Medal", "Python"],
   },
   {
-    t: 0.38,
+    t: 0.385,
     index: "02",
     year: "2025",
     category: "Higher Education",
@@ -232,7 +232,7 @@ const ACHIEVEMENTS_DATA = [
     chips: ["CGPA 9.0 / 10", "Algorithms", "Operating Systems", "VIT Vellore"],
   },
   {
-    t: 0.62,
+    t: 0.625,
     index: "03",
     year: "2026",
     category: "Real-Time Systems",
@@ -242,7 +242,7 @@ const ACHIEVEMENTS_DATA = [
     chips: ["React", "Node.js", "Express", "Socket.IO", "WebSockets"],
   },
   {
-    t: 0.84,
+    t: 0.845,
     index: "04",
     year: "2026",
     category: "Fintech Platform",
@@ -323,33 +323,7 @@ function createGlassAchievementCardTexture(item) {
 
   // 5. Header: Index Capsule + Category Label + Year Badge
   // 5a. Index capsule [ 01 ]
-  drawRoundedRectPath(ctx, 76, 72, 64, 38, 8);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
-  ctx.lineWidth = 1.0;
-  ctx.stroke();
-
-  ctx.fillStyle = "#ffffff";
-  ctx.font = '700 19px system-ui, -apple-system, sans-serif';
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(item.index, 76 + 32, 72 + 19);
-
-  // 5b. Category Label
-  ctx.textAlign = "left";
-  ctx.fillStyle = "#94a3b8";
-  ctx.font = '600 21px system-ui, -apple-system, sans-serif';
-  if ("letterSpacing" in ctx) ctx.letterSpacing = "2px";
-  ctx.fillText(item.category.toUpperCase(), 158, 72 + 19);
-  if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
-
-  // 5c. Year Capsule Badge (Upper Right)
-  const badgeW = 110;
-  const badgeH = 40;
-  const badgeX = W - 76 - badgeW;
-  const badgeY = 70;
-  drawRoundedRectPath(ctx, badgeX, badgeY, badgeW, badgeH, 20);
+  drawRoundedRectPath(ctx, 76, 68, 76, 46, 10);
   ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
   ctx.fill();
   ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
@@ -357,24 +331,50 @@ function createGlassAchievementCardTexture(item) {
   ctx.stroke();
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = '700 21px system-ui, -apple-system, sans-serif';
+  ctx.font = '700 24px system-ui, -apple-system, sans-serif';
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(item.index, 76 + 38, 68 + 23);
+
+  // 5b. Category Label
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = '600 25px system-ui, -apple-system, sans-serif';
+  if ("letterSpacing" in ctx) ctx.letterSpacing = "2px";
+  ctx.fillText(item.category.toUpperCase(), 172, 68 + 23);
+  if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+  // 5c. Year Capsule Badge (Upper Right)
+  const badgeW = 128;
+  const badgeH = 46;
+  const badgeX = W - 76 - badgeW;
+  const badgeY = 68;
+  drawRoundedRectPath(ctx, badgeX, badgeY, badgeW, badgeH, 23);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.09)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.26)";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = '700 25px system-ui, -apple-system, sans-serif';
   ctx.textAlign = "center";
   ctx.fillText(item.year, badgeX + badgeW / 2, badgeY + badgeH / 2);
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
 
-  // 6. Title
+  // 6. Title (Enlarged)
   ctx.fillStyle = "#ffffff";
-  ctx.font = '700 54px "Michroma", sans-serif';
-  ctx.fillText(item.title, 76, 186);
+  ctx.font = '700 68px "Michroma", sans-serif';
+  ctx.fillText(item.title, 76, 194);
 
-  // 7. Subtitle
+  // 7. Subtitle (Enlarged)
   ctx.fillStyle = "#94a3b8";
-  ctx.font = '500 26px system-ui, -apple-system, sans-serif';
-  ctx.fillText(item.subtitle, 76, 236);
+  ctx.font = '500 32px system-ui, -apple-system, sans-serif';
+  ctx.fillText(item.subtitle, 76, 250);
 
   // 8. Editorial Hairline Divider
-  const divGrad = ctx.createLinearGradient(76, 274, W - 76, 274);
+  const divGrad = ctx.createLinearGradient(76, 290, W - 76, 290);
   divGrad.addColorStop(0.0, "rgba(255, 255, 255, 0.04)");
   divGrad.addColorStop(0.2, "rgba(255, 255, 255, 0.14)");
   divGrad.addColorStop(0.8, "rgba(255, 255, 255, 0.14)");
@@ -382,17 +382,17 @@ function createGlassAchievementCardTexture(item) {
   ctx.strokeStyle = divGrad;
   ctx.lineWidth = 1.0;
   ctx.beginPath();
-  ctx.moveTo(76, 274);
-  ctx.lineTo(W - 76, 274);
+  ctx.moveTo(76, 290);
+  ctx.lineTo(W - 76, 290);
   ctx.stroke();
 
-  // 9. Narrative Body Text
+  // 9. Narrative Body Text (Enlarged and Spaced)
   ctx.fillStyle = "#e2e8f0";
-  ctx.font = '400 30px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  ctx.font = '400 38px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   const words = item.desc.split(" ");
   let line = "";
-  let y = 344;
-  const lineHeight = 50;
+  let y = 370;
+  const lineHeight = 58;
   const maxWidth = W - 152;
 
   for (let n = 0; n < words.length; n++) {
@@ -408,32 +408,32 @@ function createGlassAchievementCardTexture(item) {
   }
   ctx.fillText(line, 76, y);
 
-  // 10. Capability & Tech Chips (Footer Row)
+  // 10. Capability & Tech Chips (Enlarged Footer Row)
   if (item.chips && item.chips.length > 0) {
     let chipX = 76;
-    const chipY = H - 100;
-    const chipH = 40;
+    const chipY = H - 110;
+    const chipH = 50;
 
-    ctx.font = '500 20px system-ui, -apple-system, sans-serif';
+    ctx.font = '500 24px system-ui, -apple-system, sans-serif';
     ctx.textBaseline = "middle";
 
     for (let c = 0; c < item.chips.length; c++) {
       const chipText = item.chips[c];
       const textMetrics = ctx.measureText(chipText);
-      const chipW = textMetrics.width + 32;
+      const chipW = textMetrics.width + 36;
 
-      drawRoundedRectPath(ctx, chipX, chipY, chipW, chipH, 20);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+      drawRoundedRectPath(ctx, chipX, chipY, chipW, chipH, 25);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
       ctx.fill();
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.14)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
       ctx.lineWidth = 1.0;
       ctx.stroke();
 
-      ctx.fillStyle = "#cbd5e1";
+      ctx.fillStyle = "#e2e8f0";
       ctx.textAlign = "center";
       ctx.fillText(chipText, chipX + chipW / 2, chipY + chipH / 2);
 
-      chipX += chipW + 12;
+      chipX += chipW + 14;
     }
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
@@ -718,7 +718,7 @@ export function createWormholeTunnel(curve, skyTexture) {
   for (let idx = 0; idx < ACHIEVEMENTS_DATA.length; idx++) {
     const item = ACHIEVEMENTS_DATA[idx];
     const cardTex = createGlassAchievementCardTexture(item);
-    const cardGeo = new THREE.PlaneGeometry(8.4, 4.83);
+    const cardGeo = new THREE.PlaneGeometry(9.6, 5.52);
     const cardMat = new THREE.MeshBasicMaterial({
       map: cardTex,
       transparent: true,

@@ -193,7 +193,7 @@ const ZOOM_IN_CAMERA_Z = 0.7;
 const PHASE2_FAR_Z = 36.0;
 
 // ---------------------------------------------------------------------------
-// UNIFIED BIDIRECTIONAL SCROLL ENGINE
+// UNIFIED BIDIRECTIONAL SCROLL ENGINE & WORMHOLE CARD AUTOSCROLL
 // ---------------------------------------------------------------------------
 let targetScroll = window.scrollY;
 let currentScroll = window.scrollY;
@@ -201,6 +201,144 @@ let prevScroll = window.scrollY;
 
 window.addEventListener("scroll", () => {
   targetScroll = Math.max(0, window.scrollY);
+}, { passive: true });
+
+// Wormhole Card Stops for Single-Scroll Autonavigation
+const WORMHOLE_CARD_STOPS = [
+  7200,   // Tunnel Entrance
+  9000,   // Card 1: IAAC Gold Medalist 2023
+  11200,  // Card 2: B.Tech Computer Science 2025
+  13400,  // Card 3: the-button 2026
+  15600,  // Card 4: SPNT Expense Tracker 2026
+  16800,  // Exit threshold into White Hole
+];
+
+let isCardTransitioning = false;
+let lastCardSnapTime = 0;
+let cardAnimFrame = null;
+
+function snapToCard(targetY, duration = 850) {
+  if (cardAnimFrame) cancelAnimationFrame(cardAnimFrame);
+  lastCardSnapTime = Date.now();
+  isCardTransitioning = true;
+
+  const startY = window.scrollY;
+  const distance = targetY - startY;
+  const startTime = performance.now();
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(1.0, elapsed / duration);
+    // Smooth Quintic ease-in-out curve for cinematic camera glide
+    const eased = progress < 0.5
+      ? 16 * progress * progress * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 5) / 2;
+
+    const currentY = startY + distance * eased;
+    window.scrollTo(0, currentY);
+    targetScroll = currentY;
+
+    if (progress < 1.0) {
+      cardAnimFrame = requestAnimationFrame(step);
+    } else {
+      window.scrollTo(0, targetY);
+      targetScroll = targetY;
+      isCardTransitioning = false;
+      cardAnimFrame = null;
+    }
+  }
+
+  cardAnimFrame = requestAnimationFrame(step);
+}
+
+function handleCardNavigation(direction) {
+  const currentY = window.scrollY;
+
+  // Downward navigation: advance to next card
+  if (direction > 0) {
+    for (let i = 0; i < WORMHOLE_CARD_STOPS.length; i++) {
+      if (WORMHOLE_CARD_STOPS[i] > currentY + 60) {
+        snapToCard(WORMHOLE_CARD_STOPS[i], 850);
+        return true;
+      }
+    }
+    // Past Card 4: advance into white hole emergence
+    if (currentY >= 16750 && currentY < 17600) {
+      snapToCard(17600, 750);
+      return true;
+    }
+  } 
+  // Upward navigation: rewind to previous card
+  else if (direction < 0) {
+    for (let i = WORMHOLE_CARD_STOPS.length - 1; i >= 0; i--) {
+      if (WORMHOLE_CARD_STOPS[i] < currentY - 60) {
+        snapToCard(WORMHOLE_CARD_STOPS[i], 850);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// Mouse Wheel: single wheel action triggers smooth transit to the next/previous card
+window.addEventListener("wheel", (e) => {
+  const currentY = window.scrollY;
+
+  // Active wormhole card snapping zone: from tunnel entry (7100) to exit (16900)
+  if (currentY >= 7100 && currentY <= 16900) {
+    if (Math.abs(e.deltaY) < 5) return; // ignore trackpad micro-jitter
+
+    e.preventDefault();
+
+    const now = Date.now();
+    if (isCardTransitioning || now - lastCardSnapTime < 650) {
+      return;
+    }
+
+    const direction = e.deltaY > 0 ? 1 : -1;
+    handleCardNavigation(direction);
+  }
+}, { passive: false });
+
+// Keyboard: Arrow keys, Page Up/Down, Spacebar
+window.addEventListener("keydown", (e) => {
+  const currentY = window.scrollY;
+  if (currentY >= 7100 && currentY <= 16900) {
+    if (e.key === "ArrowDown" || e.key === "PageDown" || e.key === " ") {
+      e.preventDefault();
+      const now = Date.now();
+      if (!isCardTransitioning && now - lastCardSnapTime > 650) {
+        handleCardNavigation(1);
+      }
+    } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+      e.preventDefault();
+      const now = Date.now();
+      if (!isCardTransitioning && now - lastCardSnapTime > 650) {
+        handleCardNavigation(-1);
+      }
+    }
+  }
+});
+
+// Touch swipe support for mobile
+let touchStartY = 0;
+window.addEventListener("touchstart", (e) => {
+  if (e.touches.length > 0) {
+    touchStartY = e.touches[0].clientY;
+  }
+}, { passive: true });
+
+window.addEventListener("touchend", (e) => {
+  const currentY = window.scrollY;
+  if (currentY >= 7100 && currentY <= 16900 && e.changedTouches.length > 0) {
+    const deltaTouchY = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(deltaTouchY) > 40) {
+      const now = Date.now();
+      if (!isCardTransitioning && now - lastCardSnapTime > 650) {
+        handleCardNavigation(deltaTouchY > 0 ? 1 : -1);
+      }
+    }
+  }
 }, { passive: true });
 
 // Keyframed progress curve with generous 1200px dwell windows around each achievement card.
